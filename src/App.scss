@@ -31,12 +31,8 @@
   color: white;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
 }
 
-.login-form button:hover {
-  opacity: 0.8;
-}
 
 .password-input-wrapper {
   position: relative;
@@ -65,111 +61,4 @@
   stroke: #ccc;/* Серый цвет для линии зачеркивания */
   stroke-width: 2; /* Толщина линии */
 }
-
-
-.chat-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  max-width: 900px;
-  
-}
-
-.chat-container input{
-  padding: 10px;
-  border: 1px solid #ccc; 
-}
-
-.messages {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
-  background-color: #f9f9f9;
-  display: flex;
-  flex-direction: column;
-}
-
-.input-container {
-  display: flex;
-  gap: 10px;
-  padding: 10px;
-  background-color: white;
-  border-top: 1px solid #ddd;
-}
-
-.input-container textarea {
-  flex: 1;
-  padding: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-.input-container button {
-  display: flex;
-  align-items: center;
-  padding: 10px;
-  background-color: #25d366;
-  color: white;
-  font-size: 25px;
-  font-weight: bold;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  width: 35px;
-  height: 35px;
-}
-
-.input-container button:hover {
-  opacity: 0.8;
-}
-
-.message {
-  position: relative;
-  max-width: 60%;
-  margin-bottom: 10px;
-  padding: 10px;
-  
-}
-
-.message p {
-  margin: 0;
-}
-
-.incoming {
-  background-color: rgb(226, 226, 226);
-  align-self: flex-start;
-  border-radius: 0px 10px 10px 10px;
-}
-
-.incoming::before {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-left: 13px solid transparent;
-  border-right: 0px solid transparent;
-  border-top: 13px solid rgb(226, 226, 226);
-  top: 0;
-  left: -12px;
-}
-
-.outgoing {
-  background-color: #25d366;
-  color: white;
-  align-self: flex-end;
-  border-radius: 10px 0 10px 10px;
-}
-
-.outgoing::before {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 0;
-  border-right: 13px solid transparent;
-  border-left: 0px solid transparent;
-  border-top: 13px solid  #25d366;
-  top: 0;
-  right: -12px;
-}
-
 

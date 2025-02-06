@@ -7,4 +7,9 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    button {
+      cursor: pointer;
+    }
+    button:hover{
+      opacity: 0.8}
   }
