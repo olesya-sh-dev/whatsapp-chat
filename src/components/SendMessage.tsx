@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 
 interface SendMessageProps {
   idInstance: string;
   apiTokenInstance: string;
 }
-
+interface Message {
+  text: string;
+  isIncoming: boolean;
+  sender?: string; // Номер телефона отправителя
+}
 const SendMessage: React.FC<SendMessageProps> = ({ idInstance, apiTokenInstance }) => {
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
-  const [incomingMessages, setIncomingMessages] = useState<string[]>([]);
+  const [incomingMessages, setIncomingMessages] = useState<Message[]>([]);
 
   // Отправка сообщения
   const sendMessage = async () => {
@@ -21,11 +26,11 @@ const SendMessage: React.FC<SendMessageProps> = ({ idInstance, apiTokenInstance 
           message,
         }
       );
-      alert('Сообщение отправлено!');
+      setIncomingMessages((prev) => [...prev, { text: message, isIncoming: false }]); // Добавляем исходящее сообщение
       setMessage('');
     } catch (error) {
       console.error('Ошибка при отправке сообщения:', error);
-      alert('Не удалось отправить сообщение.');
+      toast.error('Не удалось отправить сообщение.'); // Показываем ошибку в тосте
     }
   };
 
@@ -35,8 +40,6 @@ const SendMessage: React.FC<SendMessageProps> = ({ idInstance, apiTokenInstance 
       const response = await axios.get(
         `https://api.green-api.com/waInstance${idInstance}/ReceiveNotification/${apiTokenInstance}`
       );
-
-      console.log('Ответ от ReceiveNotification:', response.data); // Логируем ответ
 
       if (response.data) {
         const notification = response.data;
@@ -48,9 +51,10 @@ const SendMessage: React.FC<SendMessageProps> = ({ idInstance, apiTokenInstance 
           // Проверяем тип сообщения
           if (messageData.typeMessage === 'textMessage') {
             const textMessage = messageData.textMessageData.textMessage;
-
+            const sender = messageData.senderData.sender; 
+            console.log(sender); // Извлекаем номер телефона отправителя
             // Добавляем сообщение в список входящих
-            setIncomingMessages((prev) => [...prev, textMessage]);
+            setIncomingMessages((prev) => [...prev, { text: textMessage, isIncoming: true, sender }]);
           }
         }
 
@@ -58,11 +62,10 @@ const SendMessage: React.FC<SendMessageProps> = ({ idInstance, apiTokenInstance 
         await axios.delete(
           `https://api.green-api.com/waInstance${idInstance}/DeleteNotification/${apiTokenInstance}/${notification.receiptId}`
         );
-      } else {
-        console.log('Нет новых уведомлений.'); // Логируем, если ответ null
       }
     } catch (error) {
       console.error('Ошибка при получении сообщения:', error);
+      toast.error('Не удалось получить сообщение.'); // Показываем ошибку в тосте
     }
   };
 
@@ -73,28 +76,33 @@ const SendMessage: React.FC<SendMessageProps> = ({ idInstance, apiTokenInstance 
   }, []);
 
   return (
-    <div>
-      <h2>Отправка сообщения</h2>
+    <div className="chat-container">
       <input
+        className="phone-input"
         type="text"
         placeholder="Номер телефона"
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
       />
-      <input
-        type="text"
-        placeholder="Сообщение"
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-      />
-      <button onClick={sendMessage}>Отправить</button>
-
-      <h2>Входящие сообщения</h2>
-      <ul>
+      <div className="messages">
         {incomingMessages.map((msg, index) => (
-          <li key={index}>{msg}</li>
+          <div key={index} className={`message ${msg.isIncoming ? 'incoming' : 'outgoing'}`}>
+            {msg.isIncoming && msg.sender && <p className="sender">From: {msg.sender}</p>}
+            <p>{msg.text}</p>
+          </div>
         ))}
-      </ul>
+      </div>
+      <div className="input-container">
+        <input
+          type="text"
+          placeholder="Сообщение"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
+        <button onClick={sendMessage}>
+          {'>'}
+        </button>
+      </div>
     </div>
   );
 };
