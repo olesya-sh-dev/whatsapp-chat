@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import axios, { Axios, AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Eye, EyeOff } from 'react-feather';
 
 interface LoginProps {
   onLogin: (idInstance: string, apiTokenInstance: string) => void;
@@ -11,6 +12,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [idInstance, setIdInstance] = useState('');
   const [apiTokenInstance, setApiTokenInstance] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,6 +43,11 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     }
   };
 
+  // Функция для переключения видимости пароля
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <form onSubmit={handleSubmit} className="login-form">
       <input
@@ -49,16 +56,21 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         value={idInstance}
         onChange={(e) => setIdInstance(e.target.value)}
       />
-      <input
-        type="text"
-        placeholder="apiTokenInstance"
-        value={apiTokenInstance}
-        onChange={(e) => setApiTokenInstance(e.target.value)}
-      />
+      <div className="password-input-wrapper">
+        <input
+
+          type={showPassword ? 'text' : 'password'}
+          placeholder="apiTokenInstance"
+          value={apiTokenInstance}
+          onChange={(e) => setApiTokenInstance(e.target.value)}
+        />
+        <button type="button" onClick={togglePasswordVisibility} className="password-toggle">
+          {showPassword ? <EyeOff /> : <Eye />}
+        </button>
+      </div>
       <button type="submit" disabled={loading}>
         {loading ? 'Проверка...' : 'Войти'}
       </button>
-      <ToastContainer /> {/* Контейнер для тостов */}
     </form>
   );
 };

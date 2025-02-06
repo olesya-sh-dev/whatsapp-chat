@@ -11,10 +11,9 @@ const App: React.FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   const handleLogin = (idInstance: string, apiTokenInstance: string) => {
-    // Здесь можно добавить дополнительную проверку данных, если необходимо
     setIdInstance(idInstance);
     setApiTokenInstance(apiTokenInstance);
-    setIsLoggedIn(true); // Устанавливаем флаг в true после успешного входа
+    setIsLoggedIn(true);
   };
 
   return (

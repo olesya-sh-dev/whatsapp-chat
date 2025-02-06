@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
 
 interface SendMessageProps {
   idInstance: string;
@@ -25,9 +25,12 @@ const SendMessage: React.FC<SendMessageProps> = ({ idInstance, apiTokenInstance 
           chatId: `${phone}@c.us`,
           message,
         }
+        
       );
+     
       setIncomingMessages((prev) => [...prev, { text: message, isIncoming: false }]); // Добавляем исходящее сообщение
       setMessage('');
+      toast.success('Сообщение успешно отправлено.');
     } catch (error) {
       console.error('Ошибка при отправке сообщения:', error);
       toast.error('Не удалось отправить сообщение.'); // Показываем ошибку в тосте
@@ -52,7 +55,7 @@ const SendMessage: React.FC<SendMessageProps> = ({ idInstance, apiTokenInstance 
           if (messageData.typeMessage === 'textMessage') {
             const textMessage = messageData.textMessageData.textMessage;
             const sender = messageData.senderData.sender; 
-            console.log(sender); // Извлекаем номер телефона отправителя
+            
             // Добавляем сообщение в список входящих
             setIncomingMessages((prev) => [...prev, { text: textMessage, isIncoming: true, sender }]);
           }
@@ -65,7 +68,7 @@ const SendMessage: React.FC<SendMessageProps> = ({ idInstance, apiTokenInstance 
       }
     } catch (error) {
       console.error('Ошибка при получении сообщения:', error);
-      toast.error('Не удалось получить сообщение.'); // Показываем ошибку в тосте
+      //toast.error('Не удалось получить сообщение.'); // Показываем ошибку в тосте
     }
   };
 
@@ -80,14 +83,14 @@ const SendMessage: React.FC<SendMessageProps> = ({ idInstance, apiTokenInstance 
       <input
         className="phone-input"
         type="text"
-        placeholder="Номер телефона"
+        placeholder="Введите номер телефона получателя"
         value={phone}
         onChange={(e) => setPhone(e.target.value)}
       />
       <div className="messages">
         {incomingMessages.map((msg, index) => (
           <div key={index} className={`message ${msg.isIncoming ? 'incoming' : 'outgoing'}`}>
-            {msg.isIncoming && msg.sender && <p className="sender">From: {msg.sender}</p>}
+           
             <p>{msg.text}</p>
           </div>
         ))}
@@ -103,6 +106,7 @@ const SendMessage: React.FC<SendMessageProps> = ({ idInstance, apiTokenInstance 
           {'>'}
         </button>
       </div>
+      <ToastContainer />
     </div>
   );
 };

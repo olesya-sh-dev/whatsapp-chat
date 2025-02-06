@@ -43,9 +43,35 @@ body {
   cursor: pointer;
 }
 
-.login-form button:hover {
-  background-color: #128c7e;
+
+.password-input-wrapper {
+  position: relative;
 }
+
+.password-input-wrapper input {
+  padding-right: 40px; /* Добавляем отступ для иконки */
+}
+.password-input-wrapper button {
+  background: none;
+}
+.password-toggle {
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+
+}
+
+.password-toggle svg {
+  width: 25px;
+  height: 25px;
+  stroke: #ccc;/* Серый цвет для линии зачеркивания */
+  stroke-width: 2; /* Толщина линии */
+}
+
 
 .chat-container {
   display: flex;
