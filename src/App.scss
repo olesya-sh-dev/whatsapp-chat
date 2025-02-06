@@ -1,13 +1,4 @@
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f0f0f0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
+@import "./styles/global.scss";
 
 .app {
   width: 100%;
@@ -43,6 +34,9 @@ body {
   cursor: pointer;
 }
 
+.login-form button:hover {
+  opacity: 0.8;
+}
 
 .password-input-wrapper {
   position: relative;
@@ -103,11 +97,11 @@ body {
   border-top: 1px solid #ddd;
 }
 
-.input-container input {
+.input-container textarea {
   flex: 1;
-  padding: 10px;
+  padding: 5px;
   border: 1px solid #ccc;
-  border-radius: 50px;
+  border-radius: 5px;
 }
 
 .input-container button {
@@ -126,7 +120,7 @@ body {
 }
 
 .input-container button:hover {
-  background-color: #128c7e;
+  opacity: 0.8;
 }
 
 .message {

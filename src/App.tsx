@@ -3,7 +3,7 @@ import Login from './components/Login';
 import SendMessage from './components/SendMessage';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './App.css';
+import './App.scss';
 
 const App: React.FC = () => {
   const [idInstance, setIdInstance] = useState<string | null>(null);

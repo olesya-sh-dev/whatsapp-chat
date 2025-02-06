@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 
@@ -15,6 +15,7 @@ const SendMessage: React.FC<SendMessageProps> = ({ idInstance, apiTokenInstance 
   const [phone, setPhone] = useState('');
   const [message, setMessage] = useState('');
   const [incomingMessages, setIncomingMessages] = useState<Message[]>([]);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Отправка сообщения
   const sendMessage = async () => {
@@ -78,6 +79,12 @@ const SendMessage: React.FC<SendMessageProps> = ({ idInstance, apiTokenInstance 
     return () => clearInterval(interval);
   }, []);
 
+  // Автоматическое изменение высоты textarea
+  useEffect(() => {
+    if (textareaRef.current) {
+      textareaRef.current.style.height = message ? `${textareaRef.current.scrollHeight}px` : 'auto';
+    }
+  }, [message]);
   return (
     <div className="chat-container">
       <input
@@ -96,11 +103,13 @@ const SendMessage: React.FC<SendMessageProps> = ({ idInstance, apiTokenInstance 
         ))}
       </div>
       <div className="input-container">
-        <input
-          type="text"
+        <textarea
+          ref={textareaRef}
           placeholder="Сообщение"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          style={{ overflowY: 'hidden', height: 'auto', minHeight: '25px' }}
+          
         />
         <button onClick={sendMessage}>
           {'>'}
