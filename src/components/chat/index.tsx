@@ -83,6 +83,8 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
     }
   }, [message]);
 
+  // Проверка, есть ли текст в сообщении
+  const isMessageEmpty = !message.trim();
   return (
     <div className={style.ChatContainer}>
       <input
@@ -112,7 +114,7 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
-        <button onClick={handleSendMessage}>{'>'}</button>
+        {!isMessageEmpty && <button onClick={handleSendMessage}>{'>'}</button>}
       </div>
       <ToastContainer />
     </div>
