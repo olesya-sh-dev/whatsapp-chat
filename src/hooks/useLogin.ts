@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import axios from 'axios';
 import { toast } from 'react-toastify';
-import { ResponseData } from '../types/types';
+import { BASE_URL, WA_INSTANCE_PATH } from 'src/constants';
+import { fetchNotification } from 'src/utils/fetchNotification';
 
 export const useLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -10,11 +10,9 @@ export const useLogin = () => {
     // Устанавливаем состояние загрузки в true перед началом запроса
     setIsLoading(true);
     try {
-      const response = await axios.get<ResponseData>(
-        `https://api.green-api.com/waInstance${idInstance}/ReceiveNotification/${apiTokenInstance}`
-      );
-      // Возвращаем данные ответа, если запрос успешен
-      return response.data;
+      const url = `${BASE_URL}${WA_INSTANCE_PATH(idInstance)}/ReceiveNotification/${apiTokenInstance}`;
+      const data = await fetchNotification(url);
+      return data;
     } catch (error) {
       toast.error('Ошибка при проверке данных. Пожалуйста, попробуйте снова.');
       throw error;

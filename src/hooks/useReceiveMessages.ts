@@ -1,6 +1,8 @@
 import { useCallback, useEffect } from 'react';
 import axios from 'axios';
-import { ReceiveNotificationResponse, Message } from '../types/types';
+import { Message } from '../types/types';
+import { fetchNotification } from 'src/utils/fetchNotification';
+import { BASE_URL, WA_INSTANCE_PATH } from 'src/constants';
 
 export const useReceiveMessages = (
   idInstance: string,
@@ -13,12 +15,12 @@ export const useReceiveMessages = (
   const receiveMessage = useCallback(async () => {
     try {
       // Получаем уведомление
-      const response = await axios.get<ReceiveNotificationResponse>(
-        `https://api.green-api.com/waInstance${idInstance}/ReceiveNotification/${apiTokenInstance}`
-      );
+      const url = `${BASE_URL}${WA_INSTANCE_PATH(idInstance)}/ReceiveNotification/${apiTokenInstance}`;
+      const data = await fetchNotification(url);
 
-      if (response.data) {
-        const notification = response.data;
+      if (data) {
+        const notification = data;
+        console.log(notification);
 
         // Получаем телефон отправителя
         const sender = notification.body.senderData.sender.replace('@c.us', '');
@@ -60,7 +62,7 @@ export const useReceiveMessages = (
         // Удаляем уведомление после обработки
         try {
           await axios.delete(
-            `https://api.green-api.com/waInstance${idInstance}/DeleteNotification/${apiTokenInstance}/${notification.receiptId}`
+            `${BASE_URL}${WA_INSTANCE_PATH(idInstance)}/DeleteNotification/${apiTokenInstance}/${notification.receiptId}`
           );
         } catch (error) {
           console.error('Ошибка при удалении уведомления:', error);

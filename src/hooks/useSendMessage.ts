@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { Message } from '../types/types';
+import { BASE_URL, WA_INSTANCE_PATH } from 'src/constants';
 
 export const useSendMessage = () => {
   const sendMessage = async (
@@ -12,7 +13,7 @@ export const useSendMessage = () => {
   ) => {
     try {
       await axios.post(
-        `https://api.green-api.com/waInstance${idInstance}/SendMessage/${apiTokenInstance}`,
+        `${BASE_URL}${WA_INSTANCE_PATH(idInstance)}/SendMessage/${apiTokenInstance}`,
         {
           chatId: `${phone}@c.us`,
           message,
