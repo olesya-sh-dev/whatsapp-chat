@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import style from './styles.module.scss';
 import { SendMessageProps, Message } from '../../types/types';
@@ -24,7 +24,7 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
     chatStartedByUser
   );
 
-  const handleSendMessage = async () => {
+  const handleSendMessage = useCallback(async () => {
     if (!phone) {
       toast.error('Пожалуйста, введите номер телефона.');
       return;
@@ -34,7 +34,6 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
       return;
     }
 
-    // Отправка сообщения через хук
     await sendMessageHook(
       idInstance,
       apiTokenInstance,
@@ -44,18 +43,30 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
     );
     setMessage('');
     setChatStartedByUser(true);
-  };
+  }, [
+    idInstance,
+    apiTokenInstance,
+    phone,
+    message,
+    sendMessageHook,
+    setIncomingMessages,
+    setChatStartedByUser,
+    phoneError,
+  ]);
 
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setPhone(value);
-    // Проверка на наличие нецифровых символов
-    if (/[^0-9]/.test(value)) {
-      setPhoneError('номер телефона должен содержать только цифры');
-    } else {
-      setPhoneError(null);
-    }
-  };
+  const handlePhoneChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setPhone(value);
+      // Проверка на наличие нецифровых символов
+      if (/[^0-9]/.test(value)) {
+        setPhoneError('номер телефона должен содержать только цифры');
+      } else {
+        setPhoneError(null);
+      }
+    },
+    []
+  ); // setPhone и setPhoneError стабильны, поэтому массив зависимостей пуст
 
   useEffect(() => {
     if (messagesEndRef.current) {
