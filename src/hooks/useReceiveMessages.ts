@@ -12,37 +12,62 @@ export const useReceiveMessages = (
 ) => {
   const receiveMessage = useCallback(async () => {
     try {
+      // Получаем уведомление
       const response = await axios.get<ReceiveNotificationResponse>(
         `https://api.green-api.com/waInstance${idInstance}/ReceiveNotification/${apiTokenInstance}`
       );
 
       if (response.data) {
         const notification = response.data;
+
+        // Получаем телефон отправителя
         const sender = notification.body.senderData.sender.replace('@c.us', '');
 
+        const idMessage = notification.body.idMessage;
+
+        // Проверяем тип уведомления
         if (notification.body.typeWebhook === 'incomingMessageReceived') {
           const messageData = notification.body.messageData;
 
+          // Обрабатываем только текстовые сообщения
           if (messageData.typeMessage === 'textMessage') {
             const textMessage = messageData.textMessageData.textMessage;
 
+            // Если чат не начат пользователем и номер телефона не установлен, устанавливаем его
             if (!chatStartedByUser && !phone) {
               setPhone(sender);
             }
 
-            setIncomingMessages((prev) => [
-              ...prev,
-              { text: textMessage, isIncoming: true, sender },
-            ]);
+            setIncomingMessages((prev) => {
+              // Проверяем, не было ли это сообщение уже добавлено по idMessage
+              const isDuplicate = prev.some((msg) => msg.id === idMessage);
+              if (!isDuplicate) {
+                return [
+                  ...prev,
+                  {
+                    text: textMessage,
+                    isIncoming: true,
+                    sender,
+                    id: idMessage,
+                  },
+                ];
+              }
+              return prev;
+            });
           }
         }
 
-        await axios.delete(
-          `https://api.green-api.com/waInstance${idInstance}/DeleteNotification/${apiTokenInstance}/${notification.receiptId}`
-        );
+        // Удаляем уведомление после обработки
+        try {
+          await axios.delete(
+            `https://api.green-api.com/waInstance${idInstance}/DeleteNotification/${apiTokenInstance}/${notification.receiptId}`
+          );
+        } catch (error) {
+          console.error('Ошибка при удалении уведомления:', error);
+        }
       }
     } catch (error) {
-      console.error('Ошибка при получении сообщения:', error);
+      console.error('Ошибка при получении уведомления:', error);
     }
   }, [
     idInstance,

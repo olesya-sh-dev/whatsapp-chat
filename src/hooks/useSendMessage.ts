@@ -22,7 +22,7 @@ export const useSendMessage = () => {
       // Добавляем исходящее сообщение только если отправка прошла успешно
       setIncomingMessages((prev) => [
         ...prev,
-        { text: message, isIncoming: false },
+        { text: message, isIncoming: false, id: Date.now().toString() },
       ]);
       toast.success('Сообщение успешно отправлено.');
     } catch (error) {
