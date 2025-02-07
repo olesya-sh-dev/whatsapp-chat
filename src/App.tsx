@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Login from './components/login';
-
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import './App.scss';
 import { Chat } from './components/chat';
+import "./styles/global.scss";
 
-const App: React.FC = () => {
+const App = () => {
   const [idInstance, setIdInstance] = useState<string | null>(null);
   const [apiTokenInstance, setApiTokenInstance] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -18,14 +17,14 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="app">
+    <>
       {!isLoggedIn ? (
         <Login onLogin={handleLogin} />
       ) : (
         <Chat idInstance={idInstance!} apiTokenInstance={apiTokenInstance!} />
       )}
-      <ToastContainer /> {/* Контейнер для тостов */}
-    </div>
+      <ToastContainer /> 
+    </>
   );
 };
 

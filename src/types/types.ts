@@ -1,4 +1,10 @@
-
+export interface LoginProps {
+  onLogin: (idInstance: string, apiTokenInstance: string) => void;
+}
+export interface LoginForm {
+  idInstance: string;
+  apiTokenInstance: string;
+}
 export interface SenderData {
     chatId: string;
     chatName: string;
@@ -31,7 +37,7 @@ export interface SenderData {
     messageData: MessageData;
   }
   
-  export interface Notification {
+  export interface ReceiveNotificationResponse {
     receiptId: number;
     body: NotificationBody;
   }
