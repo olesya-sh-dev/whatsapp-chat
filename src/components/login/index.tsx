@@ -1,80 +1,57 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useForm, SubmitHandler } from 'react-hook-form';
 import axios, { AxiosError } from 'axios';
-import { toast, ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Eye, EyeOff } from 'react-feather';
-
+import style from './styles.module.scss';
 interface LoginProps {
   onLogin: (idInstance: string, apiTokenInstance: string) => void;
 }
-
-const Login: React.FC<LoginProps> = ({ onLogin }) => {
-  const [idInstance, setIdInstance] = useState('');
-  const [apiTokenInstance, setApiTokenInstance] = useState('');
-  const [loading, setLoading] = useState(false);
+interface LoginForm {
+  idInstance: string;
+  apiTokenInstance: string;
+}
+const Login = ({ onLogin }: LoginProps) => {
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<LoginForm>();
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Валидация данных
-    if (!idInstance || !apiTokenInstance) {
-      toast.error('Пожалуйста, заполните оба поля.');
-      return;
-    }
-
-    // Проверка данных через API
-    setLoading(true);
+  const onSubmit: SubmitHandler<LoginForm> = async (data) => {
     try {
       const response = await axios.get(
-        `https://api.green-api.com/waInstance${idInstance}/ReceiveNotification/${apiTokenInstance}`
+        `https://api.green-api.com/waInstance${data.idInstance}/ReceiveNotification/${data.apiTokenInstance}`
       );
-
-      // Если запрос успешен, вызываем onLogin
-      onLogin(idInstance, apiTokenInstance);
-    } catch (error: AxiosError | any) {
-      if (error.response && (error.response.status === 403 || error.response.status === 401)) {
-        toast.error('Некорректные данные. Проверьте idInstance и apiTokenInstance.');
-      } else {
-        toast.error('Ошибка при проверке данных. Пожалуйста, попробуйте снова.');
-      }
-    } finally {
-      setLoading(false);
+      onLogin(data.idInstance, data.apiTokenInstance);
+    } catch (error) {
+      toast.error('Ошибка при проверке данных. Пожалуйста, попробуйте снова.');
     }
-  };
-
-  // Функция для переключения видимости пароля
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
   };
 
   return (
-    <form onSubmit={handleSubmit} className="login-form">
+    <form onSubmit={handleSubmit(onSubmit)} className={style.LoginForm}>
       <input
-        type="text"
+        {...register('idInstance', { required: 'Поле обязательно для заполнения' })}
         placeholder="idInstance"
-        value={idInstance}
-        onChange={(e) => setIdInstance(e.target.value)}
       />
-      <div className="password-input-wrapper">
-        <input
+      {errors.idInstance && <span className={style.ErrorMessage}>{errors.idInstance.message}</span>}
 
+      <div className={style.PasswordInput}>
+        <input
+          {...register('apiTokenInstance', { required: 'Поле обязательно для заполнения' })}
           type={showPassword ? 'text' : 'password'}
           placeholder="apiTokenInstance"
-          value={apiTokenInstance}
-          onChange={(e) => setApiTokenInstance(e.target.value)}
         />
-        <button type="button" onClick={togglePasswordVisibility} className="password-toggle">
+        <button type="button" onClick={() => setShowPassword(!showPassword)}>
           {showPassword ? <EyeOff /> : <Eye />}
         </button>
       </div>
-      <button type="submit" disabled={loading}>
-        {loading ? 'Проверка...' : 'Войти'}
+      {errors.apiTokenInstance && <span className={style.ErrorMessage}>{errors.apiTokenInstance.message}</span>}
+
+      <button type="submit" disabled={isSubmitting}>
+        {isSubmitting ? 'Проверка...' : 'Войти'}
       </button>
     </form>
   );
 };
 
 export default Login;
-
-
