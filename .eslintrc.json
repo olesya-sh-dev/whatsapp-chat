@@ -45,15 +45,6 @@
       "version": "detect"
     },
     "import/resolver": {
-      "alias": {
-        "map": [
-          ["@components", "./src/components"],
-          ["@hooks", "./src/hooks"],
-          ["@types", "./src/types"],
-          ["@styles", "./src/styles"]
-        ],
-        "extensions": [".js", ".jsx", ".ts", ".tsx"]
-      },
       "typescript": {}
     }
   },
@@ -61,11 +52,14 @@
     {
       "files": ["*.ts", "*.tsx"],
       "rules": {
-        "@typescript-eslint/explicit-module-boundary-types": "off"
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-misused-promises": [
+          "error",
+          {
+            "checksVoidReturn": false
+          }
+        ]
       }
     }
   ]
 }
-
-
-  

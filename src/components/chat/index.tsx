@@ -14,7 +14,7 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { sendMessage } = useSendMessage();
+  const { sendMessage: sendMessageHook } = useSendMessage();
   useReceiveMessages(
     idInstance,
     apiTokenInstance,
@@ -30,10 +30,12 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
       return;
     }
     if (phoneError) {
-      toast.error('номер телефона должен содержать только цифры');
+      toast.error('Номер телефона должен содержать только цифры.');
       return;
     }
-    await sendMessage(
+
+    // Отправка сообщения через хук
+    await sendMessageHook(
       idInstance,
       apiTokenInstance,
       phone,
@@ -99,7 +101,7 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
-        <button onClick={() => handleSendMessage}>{'>'}</button>
+        <button onClick={handleSendMessage}>{'>'}</button>
       </div>
       <ToastContainer />
     </div>

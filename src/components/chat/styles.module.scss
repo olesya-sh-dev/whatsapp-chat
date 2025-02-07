@@ -40,9 +40,9 @@
         background-color: rgb(226, 226, 226);
         align-self: flex-start;
         border-radius: 0px 10px 10px 10px;
-        white-space: pre-wrap; /* Включает перенос слов */
-        word-wrap: break-word; /* Переносит длинные слова */
-        overflow-wrap: break-word; /* Альтернативное свойство для переноса длинных слов */
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
 
         &::before {
           content: '';
@@ -62,9 +62,8 @@
         color: white;
         align-self: flex-end;
         border-radius: 10px 0 10px 10px;
-        white-space: pre-wrap; /* Включает перенос слов */
-        word-wrap: break-word; /* Переносит длинные слова */
-        overflow-wrap: break-word; /* Альтернативное свойство для переноса длинных слов */
+        white-space: pre-wrap;
+        word-wrap: break-word;
 
         &::before {
           content: '';
