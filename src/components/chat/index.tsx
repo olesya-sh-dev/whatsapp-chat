@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import style from './styles.module.scss';
 import { SendMessageProps, Message } from '../../types/types';
 import { useReceiveMessages } from '../../hooks/useReceiveMessages';
@@ -10,6 +10,7 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
   const [message, setMessage] = useState('');
   const [incomingMessages, setIncomingMessages] = useState<Message[]>([]);
   const [chatStartedByUser, setChatStartedByUser] = useState(false);
+  const [phoneError, setPhoneError] = useState<string | null>(null); // Состояние для ошибки
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -17,9 +18,29 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
   useReceiveMessages(idInstance, apiTokenInstance, setIncomingMessages, phone, setPhone, chatStartedByUser);
 
   const handleSendMessage = async () => {
+    if (!phone) {
+      toast.error('Пожалуйста, введите номер телефона.');
+      return;
+    }
+    if (phoneError) {
+      toast.error('номер телефона должен содержать только цифры');
+      return;
+    }
     await sendMessageHook(idInstance, apiTokenInstance, phone, message, setIncomingMessages);
     setMessage('');
-    setChatStartedByUser(true); 
+    setChatStartedByUser(true);
+  };
+
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setPhone(value);
+
+    // Проверка на наличие нецифровых символов
+    if (/[^0-9]/.test(value)) {
+      setPhoneError('номер телефона должен содержать только цифры');
+    } else {
+      setPhoneError(null); // Очищаем ошибку, если ввод корректен
+    }
   };
 
   useEffect(() => {
@@ -44,8 +65,10 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
         type="text"
         placeholder="Введите номер телефона получателя"
         value={phone}
-        onChange={(e) => setPhone(e.target.value)}
+        onChange={handlePhoneChange}
+        required
       />
+      {phoneError && <p className={style.ErrorMessage}>{phoneError}</p>} 
       <div className={style.Messages}>
         {incomingMessages.map((msg, index) => (
           <div key={index} className={`${style.Message} ${msg.isIncoming ? style.Incoming : style.Outgoing}`}>

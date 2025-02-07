@@ -11,7 +11,12 @@
     padding: 10px;
     border: 2px solid #ccc;
   }
-
+  .ErrorMessage{
+    margin-top: 5px;
+    margin-left: 10px;
+    color: red;
+    font-size: 12px;
+  }
   .Messages {
     flex: 1;
     overflow-y: auto;
