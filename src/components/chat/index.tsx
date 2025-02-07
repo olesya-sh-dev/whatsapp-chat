@@ -10,12 +10,19 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
   const [message, setMessage] = useState('');
   const [incomingMessages, setIncomingMessages] = useState<Message[]>([]);
   const [chatStartedByUser, setChatStartedByUser] = useState(false);
-  const [phoneError, setPhoneError] = useState<string | null>(null); // Состояние для ошибки
+  const [phoneError, setPhoneError] = useState<string | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { sendMessage: sendMessageHook } = useSendMessage();
-  useReceiveMessages(idInstance, apiTokenInstance, setIncomingMessages, phone, setPhone, chatStartedByUser);
+  const { sendMessage } = useSendMessage();
+  useReceiveMessages(
+    idInstance,
+    apiTokenInstance,
+    setIncomingMessages,
+    phone,
+    setPhone,
+    chatStartedByUser
+  );
 
   const handleSendMessage = async () => {
     if (!phone) {
@@ -26,7 +33,13 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
       toast.error('номер телефона должен содержать только цифры');
       return;
     }
-    await sendMessageHook(idInstance, apiTokenInstance, phone, message, setIncomingMessages);
+    await sendMessage(
+      idInstance,
+      apiTokenInstance,
+      phone,
+      message,
+      setIncomingMessages
+    );
     setMessage('');
     setChatStartedByUser(true);
   };
@@ -34,12 +47,11 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setPhone(value);
-
     // Проверка на наличие нецифровых символов
     if (/[^0-9]/.test(value)) {
       setPhoneError('номер телефона должен содержать только цифры');
     } else {
-      setPhoneError(null); // Очищаем ошибку, если ввод корректен
+      setPhoneError(null);
     }
   };
 
@@ -54,7 +66,7 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
       textareaRef.current.style.height = 'auto';
       const newHeight = textareaRef.current.scrollHeight;
       const minHeight = 25;
-      textareaRef.current.style.height = Math.max(newHeight, minHeight) + 'px';
+      textareaRef.current.style.height = `${Math.max(newHeight, minHeight)}px`;
     }
   }, [message]);
 
@@ -68,10 +80,13 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
         onChange={handlePhoneChange}
         required
       />
-      {phoneError && <p className={style.ErrorMessage}>{phoneError}</p>} 
+      {phoneError && <p className={style.ErrorMessage}>{phoneError}</p>}
       <div className={style.Messages}>
         {incomingMessages.map((msg, index) => (
-          <div key={index} className={`${style.Message} ${msg.isIncoming ? style.Incoming : style.Outgoing}`}>
+          <div
+            key={index}
+            className={`${style.Message} ${msg.isIncoming ? style.Incoming : style.Outgoing}`}
+          >
             <p>{msg.text}</p>
           </div>
         ))}
@@ -84,9 +99,7 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
-        <button onClick={handleSendMessage}>
-          {'>'}
-        </button>
+        <button onClick={() => handleSendMessage}>{'>'}</button>
       </div>
       <ToastContainer />
     </div>

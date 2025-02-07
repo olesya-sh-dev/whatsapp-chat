@@ -1,10 +1,16 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import axios from 'axios';
 import { ReceiveNotificationResponse, Message } from '../types/types';
 
-export const useReceiveMessages = (idInstance: string, apiTokenInstance: string, setIncomingMessages: React.Dispatch<React.SetStateAction<Message[]>>, phone: string, setPhone: React.Dispatch<React.SetStateAction<string>>, chatStartedByUser: boolean) => {
-
-  const receiveMessage = async () => {
+export const useReceiveMessages = (
+  idInstance: string,
+  apiTokenInstance: string,
+  setIncomingMessages: React.Dispatch<React.SetStateAction<Message[]>>,
+  phone: string,
+  setPhone: React.Dispatch<React.SetStateAction<string>>,
+  chatStartedByUser: boolean
+) => {
+  const receiveMessage = useCallback(async () => {
     try {
       const response = await axios.get<ReceiveNotificationResponse>(
         `https://api.green-api.com/waInstance${idInstance}/ReceiveNotification/${apiTokenInstance}`
@@ -24,7 +30,10 @@ export const useReceiveMessages = (idInstance: string, apiTokenInstance: string,
               setPhone(sender);
             }
 
-            setIncomingMessages((prev) => [...prev, { text: textMessage, isIncoming: true, sender }]);
+            setIncomingMessages((prev) => [
+              ...prev,
+              { text: textMessage, isIncoming: true, sender },
+            ]);
           }
         }
 
@@ -35,10 +44,19 @@ export const useReceiveMessages = (idInstance: string, apiTokenInstance: string,
     } catch (error) {
       console.error('Ошибка при получении сообщения:', error);
     }
-  };
+  }, [
+    idInstance,
+    apiTokenInstance,
+    phone,
+    chatStartedByUser,
+    setIncomingMessages,
+    setPhone,
+  ]);
 
   useEffect(() => {
-    const interval = setInterval(receiveMessage, 5000);
+    const interval = setInterval(() => {
+      receiveMessage().catch(console.error);
+    }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [receiveMessage]);
 };

@@ -2,13 +2,16 @@ import { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
+interface ResponseData {
+  status: string;
+}
 export const useLogin = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const login = async (idInstance: string, apiTokenInstance: string) => {
     setIsLoading(true);
     try {
-      const response = await axios.get(
+      const response = await axios.get<ResponseData>(
         `https://api.green-api.com/waInstance${idInstance}/ReceiveNotification/${apiTokenInstance}`
       );
       return response.data;

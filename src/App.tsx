@@ -3,7 +3,7 @@ import Login from './components/login';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { Chat } from './components/chat';
-import "./styles/global.scss";
+import './styles/global.scss';
 
 const App = () => {
   const [idInstance, setIdInstance] = useState<string | null>(null);
@@ -23,11 +23,9 @@ const App = () => {
       ) : (
         <Chat idInstance={idInstance!} apiTokenInstance={apiTokenInstance!} />
       )}
-      <ToastContainer /> 
+      <ToastContainer />
     </>
   );
 };
 
 export default App;
-
-
