@@ -1,46 +1,51 @@
-# Getting Started with Create React App
+# WhatsApp Chat App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Это приложение позволяет отправлять и получать сообщения через WhatsApp API (Green API). Оно построено с использованием React и TypeScript.
 
-## Available Scripts
+## Оглавление
 
-In the project directory, you can run:
+- [Установка](#установка)
+- [Запуск приложения](#запуск-приложения)
+- [Использование](#использование)
+- [Технологии](#технологии)
 
-### `npm start`
+## Установка
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+1. Клонируйте репозиторий:
+   git clone https://github.com/olesya-sh-dev/whatsapp-chat.git
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+2. Перейдите в директорию проекта:  
+   cd ваш-репозиторий
 
-### `npm test`
+3. Установите зависимости:  
+   npm install
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Запуск приложения
 
-### `npm run build`
+Запустите приложение в режиме разработки:
+npm start
+Приложение будет доступно по адресу http://localhost:3000.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Использование
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Вход в систему:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1. Введите ваш idInstance и apiTokenInstance, которые вы получили от Green API.
+2. Нажмите "Войти".
 
-### `npm run eject`
+Отправка сообщений:
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+1. Введите номер телефона получателя (в формате 79991234567).
+2. Введите текст сообщения.
+3. Нажмите кнопку отправки.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Получение сообщений:
+Входящие сообщения будут автоматически отображаться в чате.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## Технологии
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+React — библиотека для построения пользовательского интерфейса.
+TypeScript — язык программирования для добавления типов в JavaScript.
+Axios — библиотека для выполнения HTTP-запросов.
+React Toastify — библиотека для отображения уведомлений.
+Green API — API для интеграции с WhatsApp.
