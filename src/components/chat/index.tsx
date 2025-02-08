@@ -25,24 +25,22 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
   );
 
   const handleSendMessage = useCallback(async () => {
-    if (!phone) {
-      toast.error('Пожалуйста, введите номер телефона.');
-      return;
+    try {
+      await sendMessageHook(
+        idInstance,
+        apiTokenInstance,
+        phone,
+        message,
+        setIncomingMessages
+      );
+      setMessage('');
+      setChatStartedByUser(true);
+    } catch (error) {
+      console.error('Ошибка при отправке сообщения:', error);
+      toast.error(
+        'Ошибка при отправке сообщения. Пожалуйста, попробуйте снова.'
+      );
     }
-    if (phoneError) {
-      toast.error('Номер телефона должен содержать только цифры.');
-      return;
-    }
-
-    await sendMessageHook(
-      idInstance,
-      apiTokenInstance,
-      phone,
-      message,
-      setIncomingMessages
-    );
-    setMessage('');
-    setChatStartedByUser(true);
   }, [
     idInstance,
     apiTokenInstance,
@@ -51,7 +49,6 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
     sendMessageHook,
     setIncomingMessages,
     setChatStartedByUser,
-    phoneError,
   ]);
 
   const handlePhoneChange = useCallback(
@@ -85,6 +82,10 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
 
   // Проверка, есть ли текст в сообщении
   const isMessageEmpty = !message.trim();
+
+  // Проверка, заполнен ли телефон и не содержит ли ошибок
+  const isPhoneValid = phone && !phoneError;
+
   return (
     <div className={style.ChatContainer}>
       <input
@@ -114,7 +115,9 @@ export const Chat = ({ idInstance, apiTokenInstance }: SendMessageProps) => {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
         />
-        {!isMessageEmpty && <button onClick={handleSendMessage}>{'>'}</button>}
+        {!isMessageEmpty && isPhoneValid && (
+          <button onClick={handleSendMessage}>{'>'}</button>
+        )}
       </div>
       <ToastContainer />
     </div>
